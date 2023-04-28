@@ -14,7 +14,7 @@ import { ReactElement, useState } from "react";
 import ErrorMessage from "../../components/error";
 import Loading from "../../components/loading";
 import { useLocationsList } from "../../lib/hooks";
-import { TableItem } from "../../types";
+import { LocationItem } from "../../types";
 
 const Locations = () => {
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -34,12 +34,12 @@ const Locations = () => {
         ...(columnHash && { direction: direction.toLowerCase() }),
     });
     const itemsPerPageOptions = [10, 20, 50, 100];
-    const tableItems: TableItem[] = list.map(
-        ({ id, inventory_level: stock, name, price }) => ({
+    const tableItems: LocationItem[] = list.map(
+        ({ id, label, description, enabled }) => ({
             id,
-            name,
-            price,
-            stock,
+            label,
+            // description,
+            enabled,
         })
     );
 
@@ -58,26 +58,23 @@ const Locations = () => {
         setDirection(newDirection);
     };
 
-    const renderName = (id: number, name: string): ReactElement => (
+    const renderName = (id: number, label: string): ReactElement => (
         <Link href={`/locations/${id}`}>
-            <StyledLink>{name}</StyledLink>
+            <StyledLink>{label}</StyledLink>
         </Link>
     );
 
-    const renderPrice = (price: number): string =>
-        new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-        }).format(price);
+    const renderEnabled = (enabled: boolean): string =>
+        enabled ? 'Active' : 'Inactive'
 
-    const renderStock = (stock: number): ReactElement =>
-        stock > 0 ? (
-            <Small>{stock}</Small>
-        ) : (
-            <Small bold marginBottom="none" color="danger">
-                0
-            </Small>
-        );
+    // const renderStock = (stock: number): ReactElement =>
+    //     stock > 0 ? (
+    //         <Small>{stock}</Small>
+    //     ) : (
+    //         <Small bold marginBottom="none" color="danger">
+    //             0
+    //         </Small>
+    //     );
 
     const renderAction = (id: number): ReactElement => (
         <Dropdown
@@ -106,20 +103,20 @@ const Locations = () => {
                 columns={[
                     {
                         header: "Location name",
-                        hash: "name",
-                        render: ({ id, name }) => renderName(id, name),
+                        hash: "label",
+                        render: ({ id, label }) => renderName(id, label),
                         isSortable: true,
                     },
+                    // {
+                    //     header: "Description",
+                    //     hash: "description",
+                    //     render: ({ description }) => renderStock(description),
+                    //     isSortable: true,
+                    // },
                     {
-                        header: "Stock",
-                        hash: "stock",
-                        render: ({ stock }) => renderStock(stock),
-                        isSortable: true,
-                    },
-                    {
-                        header: "Price",
-                        hash: "price",
-                        render: ({ price }) => renderPrice(price),
+                        header: "Status",
+                        hash: "enabled",
+                        render: ({ enabled }) => renderEnabled(enabled),
                         isSortable: true,
                     },
                     {

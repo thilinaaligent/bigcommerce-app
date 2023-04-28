@@ -13,6 +13,13 @@ export interface TableItem {
     stock: number;
 }
 
+export interface LocationItem {
+    id: number;
+    label: string;
+    description: string;
+    enabled: boolean;
+}
+
 export interface ListItem extends FormData {
     id: number;
 }
