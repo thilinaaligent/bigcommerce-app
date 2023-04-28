@@ -2,7 +2,7 @@ import {
     Button,
     Dropdown,
     Panel,
-    Small,
+    // Small,
     Link as StyledLink,
     Table,
     TableSortDirection,
@@ -35,7 +35,9 @@ const Locations = () => {
     });
     const itemsPerPageOptions = [10, 20, 50, 100];
     const tableItems: LocationItem[] = list.map(
-        ({ id, label, description, enabled }) => ({
+        ({ id, label, 
+            // description, 
+            enabled }) => ({
             id,
             label,
             // description,
