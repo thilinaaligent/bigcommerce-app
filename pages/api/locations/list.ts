@@ -14,7 +14,7 @@ export default async function list(req: NextApiRequest, res: NextApiResponse) {
         }).toString();
 
         const response = await bigcommerce.get(
-            `/stores/${storeHash}/v3/inventory/locations?${params}`
+            `/inventory/locations?${params}`
         );
         res.status(200).json(response);
     } catch (error) {
