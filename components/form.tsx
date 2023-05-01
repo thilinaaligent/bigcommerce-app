@@ -1,40 +1,61 @@
-import { Button, Checkbox, Flex, FormGroup, Input, Panel, Select, Form as StyledForm, Textarea } from '@bigcommerce/big-design';
-import { ChangeEvent, FormEvent, useState } from 'react';
-import { FormData, StringKeyValue } from '../types';
+import {
+    Button,
+    Checkbox,
+    Flex,
+    FormGroup,
+    Input,
+    Panel,
+    Select,
+    Form as StyledForm,
+    Textarea,
+} from "@bigcommerce/big-design";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { FormData, LocationItemFormData, StringKeyValue } from "../types";
 
 interface FormProps {
-    formData: FormData;
+    formData: LocationItemFormData;
     onCancel(): void;
-    onSubmit(form: FormData): void;
+    onSubmit(form: LocationItemFormData): void;
 }
 
 const FormErrors = {
-    name: 'Product name is required',
-    price: 'Default price is required',
+    name: "Product name is required",
+    price: "Default price is required",
 };
 
 const Form = ({ formData, onCancel, onSubmit }: FormProps) => {
-    const { description, isVisible, name, price, type } = formData;
-    const [form, setForm] = useState<FormData>({ description, isVisible, name, price, type });
+    const { description, enabled, label } = formData;
+    const [form, setForm] = useState<LocationItemFormData>({
+        description,
+        enabled,
+        label,
+    });
     const [errors, setErrors] = useState<StringKeyValue>({});
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (
+        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         const { name: formName, value } = event.target || {};
-        setForm(prevForm => ({ ...prevForm, [formName]: value }));
+        setForm((prevForm) => ({ ...prevForm, [formName]: value }));
 
         // Add error if it exists in FormErrors and the input is empty, otherwise remove from errors
         !value && FormErrors[formName]
-            ? setErrors(prevErrors => ({ ...prevErrors, [formName]: FormErrors[formName] }))
-            : setErrors(({ [formName]: removed, ...prevErrors }) => ({ ...prevErrors }));
+            ? setErrors((prevErrors) => ({
+                  ...prevErrors,
+                  [formName]: FormErrors[formName],
+              }))
+            : setErrors(({ [formName]: removed, ...prevErrors }) => ({
+                  ...prevErrors,
+              }));
     };
 
     const handleSelectChange = (value: string) => {
-        setForm(prevForm => ({ ...prevForm, type: value }));
+        setForm((prevForm) => ({ ...prevForm, type: value }));
     };
 
     const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { checked, name: formName } = event.target || {};
-        setForm(prevForm => ({ ...prevForm, [formName]: checked }));
+        setForm((prevForm) => ({ ...prevForm, [formName]: checked }));
     };
 
     const handleSubmit = (event: FormEvent<EventTarget>) => {
@@ -52,59 +73,28 @@ const Form = ({ formData, onCancel, onSubmit }: FormProps) => {
             <Panel header="Basic Information">
                 <FormGroup>
                     <Input
-                        error={errors?.name}
-                        label="Product name"
+                        error={errors?.label}
+                        label="Label"
                         name="name"
                         required
-                        value={form.name}
+                        value={form.label}
                         onChange={handleChange}
                     />
                 </FormGroup>
                 <FormGroup>
-                    <Select
-                        label="Product type"
-                        name="type"
-                        options={[
-                            { value: 'physical', content: 'Physical' },
-                            { value: 'digital', content: 'Digital' }
-                        ]}
-                        required
-                        value={form.type}
-                        onOptionChange={handleSelectChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Input
-                        error={errors?.price}
-                        iconLeft={'$'}
-                        label="Default price (excluding tax)"
-                        name="price"
-                        placeholder="10.00"
-                        required
-                        type="number"
-                        step="0.01"
-                        value={form.price}
+                    <Textarea
+                        label="Description"
+                        name="description"
+                        value={form.description}
                         onChange={handleChange}
                     />
                 </FormGroup>
                 <FormGroup>
                     <Checkbox
-                        name="isVisible"
-                        checked={form.isVisible}
+                        name="enabled"
+                        checked={form.enabled}
                         onChange={handleCheckboxChange}
-                        label="Visible on storefront"
-                    />
-                </FormGroup>
-            </Panel>
-            <Panel header="Description">
-                <FormGroup>
-                    {/* Using description for demo purposes. Consider using a wysiwig instead (e.g. TinyMCE) */}
-                    <Textarea
-                        label="Description"
-                        name="description"
-                        placeholder="Product info"
-                        value={form.description}
-                        onChange={handleChange}
+                        label="Enabled?"
                     />
                 </FormGroup>
             </Panel>

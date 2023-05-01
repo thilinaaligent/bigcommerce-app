@@ -3,6 +3,7 @@ import { useSession } from "../context/session";
 import {
     ErrorProps,
     ListItem,
+    LocationItem,
     Order,
     QueryParams,
     ShippingAndProductsInfo,
@@ -101,6 +102,29 @@ export function useProductInfo(pid: number, list?: ListItem[]) {
     return {
         product: product ?? data,
         isLoading: product ? false : !data && !error,
+        error,
+    };
+}
+
+export function useLocationInfo(lid: number, list?: LocationItem[]) {
+    const { context } = useSession();
+    const params = new URLSearchParams({ context }).toString();
+
+    let location: LocationItem;
+
+    if (list?.length) {
+        location = list.find((item) => item.id === lid);
+    }
+
+    // Conditionally fetch product if it doesn't exist in the list (e.g. deep linking)
+    const { data, error } = useSWR(
+        !location && context ? [`/api/locations/${lid}`, params] : null,
+        fetcher
+    );
+
+    return {
+        location: location ?? data,
+        isLoading: location ? false : !data && !error,
         error,
     };
 }
