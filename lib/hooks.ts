@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useSession } from "../context/session";
+import { useSession } from "@context/session";
 import {
     ErrorProps,
     ListItem,
@@ -7,9 +7,9 @@ import {
     Order,
     QueryParams,
     ShippingAndProductsInfo,
-} from "../types";
+} from "@types";
 
-async function fetcher(url: string, query: string) {
+export async function fetcher(url: string, query: string) {
     const res = await fetch(`${url}?${query}`);
 
     // If the status code is not in the range 200-299, throw an error
@@ -53,26 +53,6 @@ export function useProductList(query?: QueryParams) {
         error,
         mutate: mutateList,
     } = useSWR(context ? ["/api/products/list", params] : null, fetcher);
-
-    return {
-        list: data?.data,
-        meta: data?.meta,
-        isLoading: !data && !error,
-        error,
-        mutateList,
-    };
-}
-
-export function useLocationsList(query?: QueryParams) {
-    const { context } = useSession();
-    const params = new URLSearchParams({ ...query, context }).toString();
-
-    // Use an array to send multiple arguments to fetcher
-    const {
-        data,
-        error,
-        mutate: mutateList,
-    } = useSWR(context ? ["/api/locations/list", params] : null, fetcher);
 
     return {
         list: data?.data,

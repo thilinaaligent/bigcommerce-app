@@ -1,16 +1,18 @@
 import { useRouter } from "next/router";
-import ErrorMessage from "../../components/error";
-import Loading from "../../components/loading";
-import LocationForm from "../../components/LocationForm";
-import { useSession } from "../../context/session";
-import { useLocationInfo, useProductList } from "../../lib/hooks";
-import { LocationItemFormData } from "../../types";
+import ErrorMessage from "@components/error";
+import Loading from "@components/loading";
+import LocationForm from "@components/LocationForm";
+import { useLocationsList } from "@components/LocationsList/hooks/useLocationsList";
+import { useSession } from "@context/session";
+import { useLocationInfo } from "@lib/hooks";
+import { LocationItemFormData } from "@types";
 
 const LocationInfo = () => {
     const router = useRouter();
     const encodedContext = useSession()?.context;
     const lid = Number(router.query?.lid);
-    const { error, isLoading, list = [], mutateList } = useProductList();
+
+    const { error, isLoading, list = [], mutateList } = useLocationsList();
     const { isLoading: isInfoLoading, location } = useLocationInfo(lid, list);
     const { label, description, enabled } = location ?? {};
     const formData = { label, description, enabled };
