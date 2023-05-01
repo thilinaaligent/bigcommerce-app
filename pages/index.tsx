@@ -67,8 +67,10 @@ const Index = () => {
         description: string
     ): ReactElement => (
         <Link href={`/locations/${id}`}>
-            <StyledLink>{label}</StyledLink>
-            <Small>{description}</Small>
+            <>
+                <StyledLink>{label}</StyledLink>
+                <Small>{description}</Small>
+            </>
         </Link>
     );
 
