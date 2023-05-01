@@ -10,7 +10,7 @@ import {
     Table,
     TableSortDirection,
 } from "@bigcommerce/big-design";
-import { MoreHorizIcon, AddIcon } from "@bigcommerce/big-design-icons";
+import { AddIcon, MoreHorizIcon } from "@bigcommerce/big-design-icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactElement, useState } from "react";
@@ -97,7 +97,7 @@ const Index = () => {
         />
     );
 
-    // if (isLoading) return <Loading />;
+    if (isLoading) return <Loading />;
     if (error) return <ErrorMessage error={error} />;
 
     return (
