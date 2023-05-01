@@ -5,17 +5,16 @@ import {
     FormGroup,
     Input,
     Panel,
-    Select,
     Form as StyledForm,
     Textarea,
 } from "@bigcommerce/big-design";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { FormData, StringKeyValue } from "../types";
+import { LocationItemFormData, StringKeyValue } from "../types";
 
 interface FormProps {
-    formData: FormData;
+    formData: LocationItemFormData;
     onCancel(): void;
-    onSubmit(form: FormData): void;
+    onSubmit(form: LocationItemFormData): void;
 }
 
 const FormErrors = {
@@ -23,14 +22,12 @@ const FormErrors = {
     price: "Default price is required",
 };
 
-const Form = ({ formData, onCancel, onSubmit }: FormProps) => {
-    const { description, isVisible, name, price, type } = formData;
-    const [form, setForm] = useState<FormData>({
+const LocationForm = ({ formData, onCancel, onSubmit }: FormProps) => {
+    const { description, enabled, label } = formData;
+    const [form, setForm] = useState<LocationItemFormData>({
         description,
-        isVisible,
-        name,
-        price,
-        type,
+        enabled,
+        label,
     });
     const [errors, setErrors] = useState<StringKeyValue>({});
 
@@ -51,9 +48,9 @@ const Form = ({ formData, onCancel, onSubmit }: FormProps) => {
               }));
     };
 
-    const handleSelectChange = (value: string) => {
-        setForm((prevForm) => ({ ...prevForm, type: value }));
-    };
+    // const handleSelectChange = (value: string) => {
+    //     setForm((prevForm) => ({ ...prevForm, type: value }));
+    // };
 
     const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { checked, name: formName } = event.target || {};
@@ -75,59 +72,28 @@ const Form = ({ formData, onCancel, onSubmit }: FormProps) => {
             <Panel header="Basic Information">
                 <FormGroup>
                     <Input
-                        error={errors?.name}
-                        label="Product name"
+                        error={errors?.label}
+                        label="Label"
                         name="name"
                         required
-                        value={form.name}
+                        value={form.label}
                         onChange={handleChange}
                     />
                 </FormGroup>
                 <FormGroup>
-                    <Select
-                        label="Product type"
-                        name="type"
-                        options={[
-                            { value: "physical", content: "Physical" },
-                            { value: "digital", content: "Digital" },
-                        ]}
-                        required
-                        value={form.type}
-                        onOptionChange={handleSelectChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Input
-                        error={errors?.price}
-                        iconLeft={"$"}
-                        label="Default price (excluding tax)"
-                        name="price"
-                        placeholder="10.00"
-                        required
-                        type="number"
-                        step="0.01"
-                        value={form.price}
+                    <Textarea
+                        label="Description"
+                        name="description"
+                        value={form.description}
                         onChange={handleChange}
                     />
                 </FormGroup>
                 <FormGroup>
                     <Checkbox
-                        name="isVisible"
-                        checked={form.isVisible}
+                        name="enabled"
+                        checked={form.enabled}
                         onChange={handleCheckboxChange}
-                        label="Visible on storefront"
-                    />
-                </FormGroup>
-            </Panel>
-            <Panel header="Description">
-                <FormGroup>
-                    {/* Using description for demo purposes. Consider using a wysiwig instead (e.g. TinyMCE) */}
-                    <Textarea
-                        label="Description"
-                        name="description"
-                        placeholder="Product info"
-                        value={form.description}
-                        onChange={handleChange}
+                        label="Enabled?"
                     />
                 </FormGroup>
             </Panel>
@@ -146,4 +112,4 @@ const Form = ({ formData, onCancel, onSubmit }: FormProps) => {
     );
 };
 
-export default Form;
+export default LocationForm;

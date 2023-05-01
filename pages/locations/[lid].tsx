@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import ErrorMessage from "../../components/error";
-import Form from "../../components/form";
 import Loading from "../../components/loading";
+import LocationForm from "../../components/LocationForm";
 import { useSession } from "../../context/session";
 import { useLocationInfo, useProductList } from "../../lib/hooks";
 import { LocationItemFormData } from "../../types";
@@ -50,7 +50,7 @@ const LocationInfo = () => {
     if (error) return <ErrorMessage error={error} />;
 
     return (
-        <Form
+        <LocationForm
             formData={formData}
             onCancel={handleCancel}
             onSubmit={handleSubmit}
