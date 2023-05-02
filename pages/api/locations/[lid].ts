@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { URLSearchParams } from "url";
 import { bigcommerceClient, getSession } from "../../../lib/auth";
 
 export default async function products(
@@ -16,12 +17,12 @@ export default async function products(
             try {
                 const { accessToken, storeHash } = await getSession(req);
                 const bigcommerce = bigcommerceClient(accessToken, storeHash);
-                // const params = new URLSearchParams({
-                //     ,
-                // }).toString();
-                const { data } = await bigcommerce.get(`/inventory/locations`, {
+                const params = new URLSearchParams({
                     "location_id:in": lid,
-                });
+                }).toString();
+                const { data } = await bigcommerce.get(
+                    `/inventory/locations${params}`
+                );
                 res.status(200).json(data);
             } catch (error) {
                 const { message, response } = error;
