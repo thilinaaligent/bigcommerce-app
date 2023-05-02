@@ -103,7 +103,7 @@ export function useLocationInfo(lid: number, list?: LocationItem[]) {
     );
 
     return {
-        location: location ?? data.find((item) => item.id === lid),
+        location: location ?? data,
         isLoading: location ? false : !data && !error,
         error,
     };

@@ -14,7 +14,7 @@ const LocationInfo = () => {
 
     const { error, isLoading, list = [], mutateList } = useLocationsList();
     const { isLoading: isInfoLoading, location } = useLocationInfo(lid, list);
-    const { label, description, enabled } = location ?? {};
+    const { label, description, enabled } = location?.[0] ?? {};
     const formData = { label, description, enabled };
 
     const handleCancel = () => router.push("/");
