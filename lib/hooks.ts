@@ -96,14 +96,14 @@ export function useLocationInfo(lid: number, list?: LocationItem[]) {
         location = list.find((item) => item.id === lid);
     }
 
-    // Conditionally fetch product if it doesn't exist in the list (e.g. deep linking)
+    // Conditionally fetch location if it doesn't exist in the list (e.g. deep linking)
     const { data, error } = useSWR(
         !location && context ? [`/api/locations/${lid}`, params] : null,
         fetcher
     );
 
     return {
-        location: location ?? data,
+        location: location ?? data.find((item) => item.id === lid),
         isLoading: location ? false : !data && !error,
         error,
     };
