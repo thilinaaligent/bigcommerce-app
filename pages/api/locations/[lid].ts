@@ -21,7 +21,7 @@ export default async function products(
                     "location_id:in": lid,
                 }).toString();
                 const { data } = await bigcommerce.get(
-                    `/inventory/locations${params}`
+                    `/inventory/locations?${params}`
                 );
                 res.status(200).json(data);
             } catch (error) {
