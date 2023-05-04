@@ -1,3 +1,6 @@
+import { Flex, H2, HR } from "@bigcommerce/big-design";
+import { ArrowBackIcon } from "@bigcommerce/big-design-icons";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import ErrorMessage from "@components/error";
 import Loading from "@components/loading";
@@ -13,8 +16,9 @@ const LocationInfo = () => {
     const lid = Number(router.query?.lid);
 
     const { error, isLoading, list = [], mutateList } = useLocationsList();
+
     const { isLoading: isInfoLoading, location } = useLocationInfo(lid, list);
-    const { label, description, enabled } = location?.[0] ?? {};
+    const { label, description, enabled } = location ?? {};
     const formData = { label, description, enabled };
 
     const handleCancel = () => router.push("/");
@@ -52,11 +56,27 @@ const LocationInfo = () => {
     if (error) return <ErrorMessage error={error} />;
 
     return (
-        <LocationForm
-            formData={formData}
-            onCancel={handleCancel}
-            onSubmit={handleSubmit}
-        />
+        <>
+            <Flex
+                alignContent="stretch"
+                alignItems="center"
+                flexDirection="row"
+                flexWrap="nowrap"
+                justifyContent="flex-start"
+                flexColumnGap="10px"
+            >
+                <Link href="/">
+                    <ArrowBackIcon />
+                </Link>
+                <H2 margin="none">Edit Location</H2>
+            </Flex>
+            <HR marginVertical="large" />
+            <LocationForm
+                formData={formData}
+                onCancel={handleCancel}
+                onSubmit={handleSubmit}
+            />
+        </>
     );
 };
 

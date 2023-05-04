@@ -38,10 +38,10 @@ const LocationsList = () => {
     });
     const itemsPerPageOptions = [10, 20, 50, 100];
     const tableItems: LocationItem[] = list.map(
-        ({ id, label, description, enabled }) => ({
+        ({ id, code, label, enabled }) => ({
             id,
+            code,
             label,
-            description,
             enabled,
         })
     );
@@ -61,18 +61,13 @@ const LocationsList = () => {
         setDirection(newDirection);
     };
 
-    const renderLabel = (
-        id: number,
-        label: string,
-        description: string
-    ): ReactElement => (
+    const renderLabel = (id: number, label: string): ReactElement => (
         <Link href={`/locations/${id}`}>
-            <>
-                <StyledLink>{label}</StyledLink>
-                <Small>{description}</Small>
-            </>
+            <StyledLink>{label}</StyledLink>
         </Link>
     );
+
+    const renderCode = (code: string): ReactElement => <Small>{code}</Small>;
 
     const renderEnabled = (enabled: boolean): ReactElement =>
         enabled ? (
@@ -119,8 +114,13 @@ const LocationsList = () => {
                         {
                             header: "Location name",
                             hash: "label",
-                            render: ({ id, label, description }) =>
-                                renderLabel(id, label, description),
+                            render: ({ id, label }) => renderLabel(id, label),
+                            isSortable: true,
+                        },
+                        {
+                            header: "Code",
+                            hash: "code",
+                            render: ({ code }) => renderCode(code),
                             isSortable: true,
                         },
                         {
