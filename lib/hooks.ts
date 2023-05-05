@@ -86,25 +86,29 @@ export function useProductInfo(pid: number, list?: ListItem[]) {
     };
 }
 
-export function useLocationInfo(lid: number, list?: LocationItem[]) {
+export function useLocationInfo(lid: number): {
+    location: LocationItem;
+    isLoading: boolean;
+    error: string;
+} {
     const { context } = useSession();
     const params = new URLSearchParams({ context }).toString();
 
-    let location: LocationItem;
+    // let location: LocationItem;
 
-    if (list?.length) {
-        location = list.find((item) => item.id === lid);
-    }
+    // if (list?.length) {
+    //     location = list.find((item) => item.id === lid);
+    // }
 
     // Conditionally fetch location if it doesn't exist in the list (e.g. deep linking)
     const { data, error } = useSWR(
-        !location && context ? [`/api/locations/${lid}`, params] : null,
+        context ? [`/api/locations/${lid}`, params] : null,
         fetcher
     );
 
     return {
-        location: location ?? data?.[0],
-        isLoading: false,
+        location: data?.[0],
+        isLoading: data?.[0] ? false : !data && !error,
         error,
     };
 }

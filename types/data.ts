@@ -19,6 +19,7 @@ interface LocationAddress {
     city: string;
     state: string;
     zip: string;
+    email: string;
     phone: string;
     geo_coordinates: GeoCordinates;
     country_code: string;

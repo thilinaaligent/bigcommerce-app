@@ -31,7 +31,18 @@ const LocationForm = ({ formData, onCancel, onSubmit }: FormProps) => {
         code,
         managed_by_external_source = false,
         type_id = "PHYSICAL",
-        // storefront_visibility = true,
+        storefront_visibility = true,
+        address: {
+            address1,
+            address2,
+            city,
+            country_code,
+            geo_coordinates: { latitude, longitude },
+            email,
+            phone,
+            state,
+            zip,
+        },
     } = formData;
     const [form, setForm] = useState<LocationItemFormData>({
         code,
@@ -40,6 +51,21 @@ const LocationForm = ({ formData, onCancel, onSubmit }: FormProps) => {
         label,
         managed_by_external_source,
         type_id,
+        storefront_visibility,
+        address: {
+            address1,
+            address2,
+            city,
+            country_code,
+            geo_coordinates: {
+                latitude,
+                longitude,
+            },
+            email,
+            phone,
+            state,
+            zip,
+        },
     });
     const [errors, setErrors] = useState<StringKeyValue>({});
 
@@ -60,9 +86,57 @@ const LocationForm = ({ formData, onCancel, onSubmit }: FormProps) => {
               }));
     };
 
-    const handleSelectChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const { value, name: formName } = event.target || {};
-        setForm((prevForm) => ({ ...prevForm, [formName]: value }));
+    const handleAddressChange = (
+        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        const { name: formName, value } = event.target || {};
+        setForm((prevForm) => ({
+            ...prevForm,
+            address: {
+                ...prevForm.address,
+                [formName]: value,
+            },
+        }));
+
+        // Add error if it exists in FormErrors and the input is empty, otherwise remove from errors
+        !value && FormErrors[formName]
+            ? setErrors((prevErrors) => ({
+                  ...prevErrors,
+                  [formName]: FormErrors[formName],
+              }))
+            : setErrors(({ [formName]: removed, ...prevErrors }) => ({
+                  ...prevErrors,
+              }));
+    };
+
+    const handleGeoCoordinatesChange = (
+        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        const { name: formName, value } = event.target || {};
+        setForm((prevForm) => ({
+            ...prevForm,
+            address: {
+                ...prevForm.address,
+                geo_coordinates: {
+                    ...prevForm.address.geo_coordinates,
+                    [formName]: value,
+                },
+            },
+        }));
+
+        // Add error if it exists in FormErrors and the input is empty, otherwise remove from errors
+        !value && FormErrors[formName]
+            ? setErrors((prevErrors) => ({
+                  ...prevErrors,
+                  [formName]: FormErrors[formName],
+              }))
+            : setErrors(({ [formName]: removed, ...prevErrors }) => ({
+                  ...prevErrors,
+              }));
+    };
+
+    const handleTypeIdChange = (value: LocationItemFormData["type_id"]) => {
+        setForm((prevForm) => ({ ...prevForm, type_id: value }));
     };
 
     const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -107,6 +181,7 @@ const LocationForm = ({ formData, onCancel, onSubmit }: FormProps) => {
                 </FormGroup>
                 <FormGroup>
                     <Textarea
+                        error={errors?.description}
                         label="Description"
                         name="description"
                         value={form.description}
@@ -118,7 +193,15 @@ const LocationForm = ({ formData, onCancel, onSubmit }: FormProps) => {
                         name="enabled"
                         checked={form.enabled}
                         onChange={handleCheckboxChange}
-                        label="Enabled?"
+                        label="Enabled"
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Checkbox
+                        name="storefront_visibility"
+                        checked={form.storefront_visibility}
+                        onChange={handleCheckboxChange}
+                        label="Visible in storefront"
                     />
                 </FormGroup>
                 <FormGroup>
@@ -140,7 +223,112 @@ const LocationForm = ({ formData, onCancel, onSubmit }: FormProps) => {
                         ]}
                         required
                         value={form.type_id}
-                        onOptionChange={(e) => handleSelectChange(e)}
+                        onOptionChange={handleTypeIdChange}
+                    />
+                </FormGroup>
+            </Panel>
+            <Panel header="Address Information">
+                <FormGroup>
+                    <Input
+                        error={errors?.address1}
+                        label="Address 1"
+                        name="address1"
+                        required
+                        value={form.address.address1}
+                        onChange={handleAddressChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Input
+                        error={errors?.address2}
+                        label="Address 2"
+                        name="address2"
+                        required
+                        value={form.address.address2}
+                        onChange={handleAddressChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Input
+                        error={errors?.city}
+                        label="City"
+                        name="city"
+                        required
+                        value={form.address.city}
+                        onChange={handleAddressChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Input
+                        error={errors?.state}
+                        label="State"
+                        name="state"
+                        required
+                        value={form.address.state}
+                        onChange={handleAddressChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Input
+                        error={errors?.zip}
+                        label="Postcode"
+                        name="zip"
+                        required
+                        value={form.address.zip}
+                        onChange={handleAddressChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Input
+                        error={errors?.country_code}
+                        label="Country code"
+                        name="country_code"
+                        required
+                        value={form.address.country_code}
+                        onChange={handleAddressChange}
+                        description="SO 3166-1 alpha-3 code."
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Input
+                        error={errors?.email}
+                        label="Email"
+                        name="email"
+                        required
+                        value={form.address.email}
+                        onChange={handleAddressChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Input
+                        error={errors?.phone}
+                        label="Phone"
+                        name="phone"
+                        required
+                        value={form.address.phone}
+                        onChange={handleAddressChange}
+                    />
+                </FormGroup>
+            </Panel>
+            <Panel header="Geo Information">
+                <FormGroup>
+                    <Input
+                        error={errors?.latitude}
+                        label="Latitude"
+                        name="latitude"
+                        required
+                        value={form.address.geo_coordinates.latitude}
+                        onChange={handleGeoCoordinatesChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Input
+                        error={errors?.longitude}
+                        label="Longitude"
+                        name="longitude"
+                        required
+                        value={form.address.geo_coordinates.longitude}
+                        onChange={handleGeoCoordinatesChange}
                     />
                 </FormGroup>
             </Panel>

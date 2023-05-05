@@ -15,32 +15,77 @@ const LocationInfo = () => {
     const encodedContext = useSession()?.context;
     const lid = Number(router.query?.lid);
 
-    const { error, isLoading, list = [], mutateList } = useLocationsList();
+    const { error, isLoading, mutateList } = useLocationsList();
 
-    const { isLoading: isInfoLoading, location } = useLocationInfo(lid, list);
-    const { label, description, enabled } = location ?? {};
-    const formData = { label, description, enabled };
+    const { isLoading: isInfoLoading, location } = useLocationInfo(lid);
+    const {
+        description,
+        enabled = true,
+        label,
+        code,
+        managed_by_external_source = false,
+        type_id = "PHYSICAL",
+        storefront_visibility = true,
+        address: {
+            address1 = "",
+            address2 = "",
+            city = "",
+            country_code = "",
+            geo_coordinates: { latitude = 0, longitude = 0 } = {},
+            email = "",
+            phone = "",
+            state = "",
+            zip = "",
+        } = {},
+    } = location ?? {
+        address: {
+            geo_coordinates: {},
+        },
+    };
+    const formData = {
+        code,
+        description,
+        enabled,
+        label,
+        managed_by_external_source,
+        type_id,
+        storefront_visibility,
+        address: {
+            address1,
+            address2,
+            city,
+            country_code,
+            geo_coordinates: {
+                latitude,
+                longitude,
+            },
+            email,
+            phone,
+            state,
+            zip,
+        },
+    };
 
     const handleCancel = () => router.push("/");
 
     const handleSubmit = async (data: LocationItemFormData) => {
         try {
-            const filteredList = list.filter((item) => item.id !== lid);
-            const { label, description, enabled } = data;
-            const apiFormattedData = {
-                label,
-                description,
-                enabled,
-            };
+            // const filteredList = list.filter((item) => item.id !== lid);
+            // const { label, description, enabled } = data;
+            // const apiFormattedData = {
+            //     label,
+            //     description,
+            //     enabled,
+            // };
 
             // Update local data immediately (reduce latency to user)
-            mutateList([...filteredList, { ...location, ...data }], false);
+            // mutateList([...filteredList, { ...location, ...data }], false);
 
             // Update location details
             await fetch(`/api/locations/${lid}?context=${encodedContext}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(apiFormattedData),
+                body: JSON.stringify(data),
             });
 
             // Refetch to validate local data
