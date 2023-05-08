@@ -2,10 +2,10 @@ import { Flex, H2, HR } from "@bigcommerce/big-design";
 import { ArrowBackIcon } from "@bigcommerce/big-design-icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import ErrorMessage from "@components/error";
+// import ErrorMessage from "@components/error";
 import Loading from "@components/loading";
 import LocationForm from "@components/LocationForm";
-import { useLocationsList } from "@components/LocationsList/hooks/useLocationsList";
+// import { useLocationsList } from "@components/LocationsList/hooks/useLocationsList";
 import { useSession } from "@context/session";
 import { useLocationInfo } from "@lib/hooks";
 import { LocationItemFormData } from "@types";
@@ -15,7 +15,7 @@ const LocationInfo = () => {
     const encodedContext = useSession()?.context;
     const lid = Number(router.query?.lid);
 
-    const { error, isLoading, mutateList } = useLocationsList();
+    // const { error, mutateList } = useLocationsList();
 
     const { isLoading: isInfoLoading, location } = useLocationInfo(lid);
     const {
@@ -89,7 +89,7 @@ const LocationInfo = () => {
             });
 
             // Refetch to validate local data
-            mutateList();
+            // mutateList();
 
             router.push("/");
         } catch (error) {
@@ -97,8 +97,8 @@ const LocationInfo = () => {
         }
     };
 
-    if (isLoading || isInfoLoading) return <Loading />;
-    if (error) return <ErrorMessage error={error} />;
+    if (isInfoLoading) return <Loading />;
+    // if (error) return <ErrorMessage error={error} />;
 
     return (
         <>
